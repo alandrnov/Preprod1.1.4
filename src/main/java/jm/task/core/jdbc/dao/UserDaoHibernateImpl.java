@@ -10,8 +10,7 @@ import java.util.List;
 
 
 public class UserDaoHibernateImpl implements UserDao {
-    Session session = Util.getSessionFactory().openSession();
-    Transaction transaction = session.beginTransaction();
+
 
     public UserDaoHibernateImpl() {
 
@@ -48,10 +47,11 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
+        Transaction transaction = null;
         try {
             Session session = Util.getSessionFactory().openSession();
             transaction = session.beginTransaction();
-            User newuser = new User (name, lastName, age);
+            User newuser = new User(name, lastName, age);
             session.save(newuser);
             transaction.commit();
             session.close();
@@ -59,22 +59,24 @@ public class UserDaoHibernateImpl implements UserDao {
             e.printStackTrace();
             transaction.rollback();
 
-            }
+        }
         System.out.println(" User – " + name + " добавлен в базу данных");
     }
 
     @Override
     public void removeUserById(long id) {
+        Transaction transaction = null;
+        Session session = null;
         try {
-        Session session = Util.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        User user = (User) session.get(User.class, id);
-        session.delete(user);
-        transaction.commit();
+            session = Util.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
+            User user = (User) session.get(User.class, id);
+            session.delete(user);
+            transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
-        }finally {
+        } finally {
             if (session != null && session.isOpen()) {
                 session.close();
             }
@@ -85,7 +87,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public List<User> getAllUsers() {
 
 
-    //Session session = Util.getSessionFactory().openSession();
+   Session session = Util.getSessionFactory().openSession();
     String sql = ("select * from User");
     Query query = session.createNativeQuery(sql).addEntity(User.class);
 
