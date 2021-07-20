@@ -2,7 +2,7 @@ package jm.task.core.jdbc;
 
 import jm.task.core.jdbc.service.UserService;
 import jm.task.core.jdbc.service.UserServiceImpl;
-
+import jm.task.core.jdbc.util.Util;
 
 
 public class Main {
@@ -11,6 +11,7 @@ public class Main {
     private static final String PASSWORD = "javajava";
 
     public static void main(String[] args) {
+
 
 
         UserService u1 = new UserServiceImpl();
@@ -27,5 +28,6 @@ public class Main {
         u1.cleanUsersTable();
 
         u1.dropUsersTable();
+
     }
 }
