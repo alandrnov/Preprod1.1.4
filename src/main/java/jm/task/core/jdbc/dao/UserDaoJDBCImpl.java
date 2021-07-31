@@ -1,17 +1,17 @@
-/*
+
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class UserDaoJDBCImpl extends Util implements UserDao {
+
+
     public UserDaoJDBCImpl() {
 
     }
@@ -40,13 +40,20 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     public void saveUser(String name, String lastName, byte age) {
         String sql = "insert into Users (Name, LastName, Age) values (?, ?, ?)";
         try (PreparedStatement st = getConnection().prepareStatement(sql)) {
+            Connection connection = getConnection();
+            connection.setAutoCommit(false);
             st.setString(1, name);
             st.setString(2, lastName);
             st.setByte(3, age);
             st.executeUpdate();
+            connection.commit();
+
+
             System.out.println("User с именем – " + name + " добавлен в базу данных");
         } catch (SQLException e) {
+
             e.printStackTrace();
+
         }
     }
 
@@ -87,4 +94,4 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
         }
     }
 }
-*/
+

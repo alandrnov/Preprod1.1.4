@@ -57,7 +57,9 @@ public class UserDaoHibernateImpl implements UserDao {
             session.close();
         } catch (Exception e) {
             e.printStackTrace();
-            transaction.rollback();
+            if (transaction != null) {
+                transaction.rollback();
+            }
 
         }
         System.out.println(" User – " + name + " добавлен в базу данных");
@@ -85,34 +87,41 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-
-
-   Session session = Util.getSessionFactory().openSession();
-    String sql = ("select * from User");
-    Query query = session.createNativeQuery(sql).addEntity(User.class);
-
-    List<User> userList = query.list();
-    session.close();
-
-    return userList;
-}
-
-    @Override
-    public void cleanUsersTable() {
-        Session session = Util.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        String sql = ("truncate table User");
-        Query query = session.createNativeQuery(sql);
-
+        List<User> userList = null;
+        Transaction transaction = null;
+        Session session = null;
         try {
-            query.executeUpdate();
+            session = Util.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
+            userList = session.createQuery("From User").list();
             transaction.commit();
-
         } catch (Exception e) {
             transaction.rollback();
-             e.printStackTrace();
+            e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
-        session.close();
+            return userList;
+        }
 
+        @Override
+        public void cleanUsersTable () {
+            Session session = Util.getSessionFactory().openSession();
+            Transaction transaction = session.beginTransaction();
+            String sql = ("truncate table User");
+            Query query = session.createNativeQuery(sql);
+
+            try {
+                query.executeUpdate();
+                transaction.commit();
+
+            } catch (Exception e) {
+                transaction.rollback();
+                e.printStackTrace();
+            }
+            session.close();
+
+        }
     }
-}

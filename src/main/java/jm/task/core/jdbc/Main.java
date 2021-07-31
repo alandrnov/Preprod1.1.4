@@ -6,9 +6,7 @@ import jm.task.core.jdbc.util.Util;
 
 
 public class Main {
-    private static final String URL = "jdbc:mysql://localhost:3306/mydbs";
-    private  static final String USERNAME = "root";
-    private static final String PASSWORD = "javajava";
+
 
     public static void main(String[] args) {
 
